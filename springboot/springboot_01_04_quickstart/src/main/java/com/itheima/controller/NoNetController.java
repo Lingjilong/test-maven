@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 
 @RestController
-@RequestMapping("noNet")
+@RequestMapping("/noNet")
 public class NoNetController {
     @GetMapping
     public String getById(){
