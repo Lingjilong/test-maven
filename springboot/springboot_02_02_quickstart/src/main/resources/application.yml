@@ -1,0 +1,29 @@
+server:
+  port: 9980
+  servlet:
+    context-path: /springboot
+
+spring:
+  datasource:
+    username: sprigboot
+    url: localhost
+    password: 12345
+    driver: asdfasdfas
+
+student:
+  name: AAA
+  age: 14
+  gen: male
+  address: XXXXXX
+  likes:
+    - run
+    - sing
+    - basketball
+
+otherAddress: ${server.servlet.context-path}/children/address
+likes:
+  - run
+  - sing
+  - basketball
+likes2: [basketball,run,sing]
+
