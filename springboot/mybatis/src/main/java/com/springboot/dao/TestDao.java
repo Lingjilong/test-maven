@@ -8,9 +8,9 @@ import java.util.List;
 
 @Mapper
 public interface TestDao {
-    @Select("select * from test where tid = #{id}")
+    @Select("select * from student where id = #{id}")
     Student getById(Integer id);
-    @Select("select * from test")
+    @Select("select * from student")
     List<Student> getAllStudent();
 
 }
