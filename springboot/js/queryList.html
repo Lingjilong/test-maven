@@ -1,0 +1,287 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel="stylesheet"
+              th:href="@{/js/bootstrap/css/bootstrap.min.css}">
+        <!-- 引入ElementUI的css样式 -->
+        <link rel="stylesheet" th:href="@{/js/element-ui/index.css}">
+
+        <title>数据查询页面</title>
+    </head>
+    <body>
+    <div id="app">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOne">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            条件查询
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label for="id" class="col-sm-2 control-label">顾问编号:</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="id" name="id" v-model="conditions.id">
+                                </div>
+                                <label for="name" class="col-sm-2 control-label">顾问姓名:</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="name" name="name" v-model="conditions.name">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  for="sel" class="col-sm-2 control-label">顾问薪资:</label>
+                                <div class="col-sm-3">
+                                    <select name="sel" id="sel" v-model="showPrice" class="form-control" @change="change">
+                                        <option value="1" >月薪</option>
+                                        <option value="2">日薪</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-2" ></div>
+                                    <div class="col-sm-4" v-show="showDay">
+                                        <label v-for="(price, index) in queryForm.dayPriceList"
+                                               :key="index" class="checkbox-inline">
+                                            <input type="checkbox"
+                                                   :value="price.value"
+                                                   v-model="dayPriceList"
+                                            >{{price.name}}
+                                        </label>
+                                    </div>
+                                    <div class="col-sm-4" v-show="showMonth">
+                                        <label v-for="(price, index) in queryForm.monthPriceList"
+                                               :key="index" class="checkbox-inline">
+                                            <input type="checkbox"
+                                                   :value="price.value"
+                                                   v-model="monthPriceList"
+                                            >{{price.name}}
+                                        </label>
+                                    </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="city" class="col-sm-2 control-label">所在城市:</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="city" name="city" v-model="conditions.city">
+                                </div>
+                                <label for="company" class="col-sm-2 control-label">所在公司:</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="company" name="company" v-model="conditions.company">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-5"></div>
+                                <div class="col-sm-2">
+                                    <button type="button"  class="btn btn-primary" @click="queryEmp">查询</button>
+                                    <button type="button"  class="btn btn-primary" @click="resetData">重置</button>
+                                </div>
+                                <div class="col-sm-5"></div>
+                            </div>
+
+			 	 	    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <el-table
+                :data="EmpList"
+                height="300"
+                border
+                style="width: 90%">
+            <el-table-column
+                    prop="id"
+                    label="顾问编号"
+                    width="200">
+            </el-table-column>
+            <el-table-column
+                    prop="name"
+                    label="顾问姓名"
+                    width="200">
+            </el-table-column>
+            <el-table-column
+                    prop="dayPrice"
+                    label="日薪(元)"
+                    width="200">
+            </el-table-column>
+            <el-table-column
+                    prop="monthPrice"
+                    label="月薪(元)"
+                    width="200">
+            </el-table-column>
+            <el-table-column
+                    prop="city"
+                    label="所在城市"
+                    width="200">
+            </el-table-column>
+            <el-table-column
+                    prop="company"
+                    label="所在公司"
+                    width="200">
+            </el-table-column>
+            <el-table-column
+                    fixed="right"
+                    label="操作"
+                    width="100">
+                <template slot-scope="scope">
+                    <el-button type="text" @click="open(scope.row)">编辑</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <div class="block">
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="conditions.pageNumber"
+                    :page-sizes="[5, 8, 10]"
+                    :page-size="conditions.pageSize"
+                    layout="sizes, prev, pager, next, jumper,total"
+                    :total="total">
+            </el-pagination>
+        </div>
+    </div>
+        <!-- vue库 -->
+        <script th:src="@{/js/vue/vue.js}" type="text/javascript"></script>
+        <script th:src="@{/js/element-ui/index.js}" type="text/javascript"></script>
+        <!-- jQuery -->
+        <script th:src="@{/js/jquery/jquery.min.js}" type="text/javascript"></script>
+        <!-- Axios库 -->
+        <script th:src="@{/js/axios/axios.js}" type="text/javascript"></script>
+        <!-- Bootstrap -->
+        <script th:inline="javascript" type="text/javascript">
+            const path = [[${#request.getContextPath()}]]
+            let vm = new Vue({
+                el: '#app',
+                data: {
+                    showPrice:'1',
+                    showDay:'1',
+                    showMonth:'2',
+                    path:path,
+                    dayPriceList:[],
+                    monthPriceList:[],
+                    queryForm:{
+                        dayPriceList:[
+                            {name:'495元以下',value:'0-495'},
+                            {name:'495元-689元',value:'495-689'},
+                            {name:'689元-919元',value:'689-919'},
+                            {name:'919元以上',value:'919-10000'}
+
+                        ],
+                        monthPriceList:[
+                            {name:'10K以下',value:'0-10000'},
+                            {name:'10K-15K',value:'10000-15000'},
+                            {name:'15K-20K',value:'15000-20000'},
+                            {name:'20K以上',value:'20000-100000'}
+                        ],
+                    },
+                    conditions:{
+                        pageNumber:1,
+                        pageSize:5,
+                        id:'',
+                        name:'',
+                        dayPriceList:[],
+                        monthPriceList:[],
+                        city:'',
+                        company:''
+                    },
+                    EmpList:[],
+                    total:0
+                },
+                methods: {
+                    open(row) {
+                        const h = this.$createElement;
+                        this.$msgbox({
+                            title: '修改日薪',
+                            message: h('p', null, [
+                                h('span', null, ' ')
+                            ]),
+                            showCancelButton: true,
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            beforeClose: (action, instance, done) => {
+                                if (action === 'confirm') {
+                                    instance.confirmButtonLoading = true;
+                                    instance.confirmButtonText = '执行中...';
+                                    setTimeout(() => {
+                                        done();
+                                        setTimeout(() => {
+                                            instance.confirmButtonLoading = false;
+                                        }, 300);
+                                    }, 3000);
+                                } else {
+                                    done();
+                                }
+                            }
+                        }).then(action => {
+                            this.$message({
+                                type: 'info',
+                                message: 'action: ' + action
+                            });
+                        });
+                    },
+                    resetData(){
+                        this.conditions.id=''
+                        this.conditions.name=''
+                        this.conditions.company=''
+                        this.conditions.city=''
+                        this.showPrice="1"
+                        this.dayPriceList=[]
+                        this.monthPriceList=[]
+                    },
+                    queryEmp(){
+                        let url = '/query'
+                        this.conditions.dayPriceList =this.dayPriceList.join(',')
+                        this.conditions.monthPriceList =this.monthPriceList.join(',')
+                        axios.get(url,{
+                            params:this.conditions
+                        }).then(res =>{
+                                if(res.data.code === 200){
+                                    console.log(res)
+                                    this.EmpList=res.data.data.rows
+                                    this.total=res.data.data.total
+                                }
+                            }).catch(error =>{
+                                console.log(error)
+                            })
+                    },
+                    handleSizeChange(val) {
+                        //console.log(`每页 ${val} 条`);
+                        this.conditions.pageSize=val
+                        this.queryEmp()
+                    },
+                    handleCurrentChange(val) {
+                        //console.log(`当前页: ${val}`);
+                        this.conditions.pageNumber=val
+                        //console.log(this.conditions.pageNumber+"~~~");
+                        this.queryEmp()
+                    },
+                    change(){
+                        if(this.showDay === this.showPrice){
+                            this.showDay = false
+                            this.showMonth = "2"
+
+                        }else{
+                            this.showMonth =false
+                            this.showDay="1"
+                        }
+                    }
+                },
+                created(){
+                    this.queryEmp()
+                    this.change()
+                }
+
+            })
+
+
+        </script>
+
+
+
+    </body>
+</html>
