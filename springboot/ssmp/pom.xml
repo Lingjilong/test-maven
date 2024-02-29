@@ -48,6 +48,8 @@
 
     <build>
         <plugins>
+            <!--打包时如测试类中有数据的增删改，在打包前要跳过maven生命周期test过程（idea的小闪电图标）-->
+            <!--打包时必须有该插件-->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

@@ -3,16 +3,24 @@ package com.springboot.controller;
 import com.springboot.bean.Student;
 import com.springboot.utils.ResultMaker;
 import com.springboot.service.IStudentService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+
+@Slf4j
 @RestController
 @RequestMapping("/students")
 public class StudentController {
+    //private final Logger log = LoggerFactory.getLogger(StudentController.class);
     @Autowired
     IStudentService iStudentService;
     @PostMapping
     public ResultMaker save(@RequestBody  Student student) throws Exception{
+        log.debug("");
+        log.info("");
+        log.warn("");
+        log.error("");
         boolean save = iStudentService.save(student);
         return new ResultMaker(save, save ? "success":"fail");
     }
