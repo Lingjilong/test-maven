@@ -1,0 +1,18 @@
+
+spring:
+  datasource:
+    druid:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf8&amp
+      username: root
+      password: etoak
+server:
+  port: 8099
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+logging:
+  logback:
+    rollingpolicy:
+      max-file-size: 4KB
+      file-name-pattern: log/project.%d.%i.log

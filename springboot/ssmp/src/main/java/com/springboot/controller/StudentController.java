@@ -17,10 +17,6 @@ public class StudentController {
     IStudentService iStudentService;
     @PostMapping
     public ResultMaker save(@RequestBody  Student student) throws Exception{
-        log.debug("");
-        log.info("");
-        log.warn("");
-        log.error("");
         boolean save = iStudentService.save(student);
         return new ResultMaker(save, save ? "success":"fail");
     }
@@ -42,6 +38,10 @@ public class StudentController {
 
     @GetMapping
     public ResultMaker getAll(){
+        log.debug("debug");
+        log.info("info");
+        log.warn("warn");
+        log.error("error");
         return new ResultMaker(true,iStudentService.list());
     }
 
